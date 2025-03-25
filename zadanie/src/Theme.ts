@@ -78,13 +78,6 @@ export const theme = createTheme({
         }
     },
     components: {
-        MuiPaper: {
-            styleOverrides: {
-                "rounded": {
-                    borderRadius: 16
-                }
-            },
-        },
         MuiTypography: {
             defaultProps: {
                 color: '#1C1C1C',
