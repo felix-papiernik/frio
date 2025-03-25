@@ -1,4 +1,4 @@
-import { Stack, Typography } from '@mui/material'
+import { Box, Stack, Typography } from '@mui/material'
 import React from 'react'
 import { SearchBar } from './Searchbar';
 import Link from 'next/link';
@@ -10,16 +10,25 @@ export default async function Header() {
     const tags = (await fetch('https://dummyjson.com/posts/tags').then(res => res.json()) as Tag[]).slice(0, 8);
 
     return (
-        <Stack component="header" direction={"column"} alignItems={"center"} gap={3} sx={{ padding: 2 }}>
+        <Stack component="header" direction={"column"} alignItems={"center"} gap={3} pt={2}>
             <Typography variant={"h1"} component={Link} href={"/"}>BloggyEN</Typography>
-            <Stack direction={"row"} spacing={2} alignItems={"center"} justifyContent={"center"}>
-                {
-                    tags.map(tag => (
+            <Box sx={{ width: "100%", backgroundColor: " #1C1C1C", py: 1 }} >
+                <Stack
+                    direction="row"
+                    spacing={2}
+                    alignItems="center"
+                    justifyContent="center"
+                    sx={{ position: "relative", mx: "auto", minHeight: 60 }}
+                    maxWidth="lg"
+                    width="100%"
+                >
+                    {tags.map(tag => (
                         <TagLink key={tag.slug} tag={tag} />
-                    ))
-                }
-                <SearchBar />
-            </Stack>
+                    ))}
+                    <SearchBar />
+                </Stack>
+            </Box>
+
         </Stack>
     )
 }

@@ -22,7 +22,7 @@ export default function Archive({ initialPosts, loadMorePosts, hidePostsCount }:
         setLoading(true);
         const addPosts = await loadMorePosts(data.posts.length);
         setData(prev => ({ ...prev, posts: [...prev.posts, ...addPosts] }));
-        setPage(page + 1);//todo check
+        setPage(page + 1);
         setLoading(false);
     }
 

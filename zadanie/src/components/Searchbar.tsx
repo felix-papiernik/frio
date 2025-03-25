@@ -1,44 +1,91 @@
 "use client";
 
+import { redirectToSearch } from "@/lib/actions";
 import { Search } from "@mui/icons-material";
-import { FormControl, InputLabel, IconButton, FilledInput } from "@mui/material";
+import { FormControl, InputLabel, IconButton, FilledInput, TextField, useTheme } from "@mui/material";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 
 export function SearchBar() {
+
+    const theme = useTheme();
 
     const pathname = usePathname();
     const params = useSearchParams();
     const router = useRouter();
 
-    const [searchText, setSearchText] = useState(params.get('query') || '');
+    const [searchText, setSearchText] = useState('');
+    const [focused, setFocused] = useState(false);
+
+    const inputRef = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {
-        const query = params.get('query');
-        setSearchText(query || '');
-    }, [pathname]);
+        // const query = params.get('query');
+        setSearchText('');
+        setFocused(false);
+        inputRef.current?.blur();
+    }, [pathname, params]);
 
     async function handleSubmit(event: FormEvent<HTMLFormElement>): Promise<void> {
         event.preventDefault();
         router.push(`/search?query=${searchText.toString()}`);
+        // redirectToSearch(searchText.toString());
+        // router.refresh();
     }
 
     return (
-        <form onSubmit={handleSubmit}>
-            <FormControl sx={{ width: "25rem" }}>
-                <InputLabel htmlFor='search'>Search</InputLabel>
-                <FilledInput
-                    id='search'
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    endAdornment={<IconButton type="submit"
-                        disabled={searchText === ""}
-                        sx={{ cursor: "pointer" }}>
-                        <Search color='success' />
-                    </IconButton>
+        <form onSubmit={handleSubmit}
+            style={{
+                position: focused ? "absolute" : "relative",
+                right: focused ? 0 : undefined,
+                width: "100%",
+                transition: "all 0.3s ease",
+                zIndex: 10,
+                backgroundColor: "#1C1C1C",
+            }}
+        >
+            <TextField
+                inputRef={inputRef}
+                hiddenLabel
+                value={searchText}
+                placeholder="Type and press enter to search"
+                onChange={(e) => setSearchText(e.target.value)}
+                onFocus={() => setFocused(true)}
+                onBlur={() => setFocused(false)}
+                slotProps={{
+                    input: {
+                        endAdornment: <IconButton type="submit"
+                            sx={{ cursor: "pointer", "&:hover": { cursor: "pointer" } }}>
+                            <Search color='primary' />
+                        </IconButton>
                     }
-                />
-            </FormControl>
+                }}
+                color="primary"
+                sx={{
+                    '& .MuiOutlinedInput-root': {
+                        color: theme.palette.primary.main,
+                        '& fieldset': {
+                            borderColor: focused ? theme.palette.primary.main : theme.palette.primary.dark,
+                            color: theme.palette.primary.main,
+                            opacity: focused ? 1 : 0.7,
+                        },
+                        '&:hover fieldset': {
+                            borderColor: theme.palette.primary.main,
+                            opacity: 1
+                        },
+                        '& input::placeholder': {
+                            color: theme.palette.primary.main,
+                            opacity: 0.7
+                        },
+                        '&:hover input::placeholder': {
+                            color: theme.palette.primary.main,
+                            opacity: 1
+                        }
+                    },
+                }}
+                size="medium"
+                fullWidth
+            />
         </form>
     )
 }
