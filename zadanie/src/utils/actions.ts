@@ -1,6 +1,7 @@
 "use server";
 
 import { PostsResponse } from "@/app/page";
+import { redirect, RedirectType } from "next/navigation";
 
 export async function getPosts(limit: number, skip: number, query?: string) {
     const response = await fetch(`https://dummyjson.com/posts?limit=${limit}&skip=${skip}${query ? "&q=" + query : ""}&delay=1000`);

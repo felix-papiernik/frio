@@ -1,5 +1,6 @@
 import { Box } from "@mui/material";
 import Arch from "@/components/Arch";
+import { postsPerPage } from "@/utils/functions";
 
 export type Article = {
   id: number;
@@ -21,19 +22,9 @@ export type PostsResponse = {
   total: number;
 }
 
-export default async function Home(props: {
-  searchParams?: Promise<{
-    query?: string
-  }>
-}) {
-  const searchParams = await props.searchParams;
-  const query = searchParams?.query || '';
+export default async function Home() {
 
-  console.log("query", query);
-
-  const limitPerPage = 3;
-
-  const res = await fetch(`https://dummyjson.com/posts/search?q=${query}&limit=${limitPerPage}&skip=0&delay=1000`)
+  const res = await fetch(`https://dummyjson.com/posts/search?limit=${postsPerPage}&skip=0&delay=1000`)
   const data = await res.json()
   const initPostsRes = data as PostsResponse;
 
@@ -43,7 +34,13 @@ export default async function Home(props: {
     <Box maxWidth={"lg"} margin={"auto"} padding={2}>
       <Arch
         initialPosts={initPostsRes}
-        postsPerPage={limitPerPage}
+        postsPerPage={postsPerPage}
+        loadMorePosts={async (skip: number) => {
+          "use server";
+          const response = await fetch(`https://dummyjson.com/posts/search?limit=${postsPerPage}&skip=${skip}&delay=1000`);
+          const json = await response.json();
+          return (json as PostsResponse).posts;
+        }}
       />
     </Box>
   )

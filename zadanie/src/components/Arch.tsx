@@ -1,10 +1,10 @@
 "use client";
 
-import { PostsResponse } from '@/app/page'
+import { Article, PostsResponse } from '@/app/page'
 import { getPosts, getPostsResponse } from '@/utils/actions';
 import { getSlug } from '@/utils/functions'
 import { Search } from '@mui/icons-material';
-import { Grid2, Card, Typography, Button, TextField, Stack, Box, OutlinedInput, FormControl, InputLabel, CircularProgress } from '@mui/material'
+import { Grid2, Card, Typography, Button, TextField, Stack, Box, OutlinedInput, FormControl, InputLabel, CircularProgress, IconButton } from '@mui/material'
 import Link from 'next/link'
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
@@ -12,45 +12,35 @@ import React, { useEffect, useState } from 'react'
 export interface ArchiveProps {
     initialPosts: PostsResponse,
     postsPerPage: number,
+    loadMorePosts: (skip: number) => Promise<Article[]>
 }
 
-let changed = false;
-export default function Arch({ initialPosts, postsPerPage }: ArchiveProps) {
-
-    const searchParams = useSearchParams();
+export default function Arch({ initialPosts, postsPerPage, loadMorePosts }: ArchiveProps) {
 
     const [data, setData] = useState(initialPosts);
-    const [reloading, setReloading] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
 
     async function handleLoadMore() {
-        setReloading(true);
-        const addPosts = await getPosts(postsPerPage, page * postsPerPage, searchParams.get('query') || undefined);
+        setLoading(true);
+        const addPosts = await loadMorePosts(data.posts.length);
         setData(prev => ({ ...prev, posts: [...prev.posts, ...addPosts] }));
-        setPage(page + 1);
-        setReloading(false);
+        setPage(page + 1);//todo check
+        setLoading(false);
     }
 
     useEffect(() => {
-        if (!changed) return;
-        const fetchPosts = async () => {
-            setReloading(true);
-            const posts = await getPostsResponse(postsPerPage, 0, searchParams.get('query') || undefined);
-            setData(posts);
-            setReloading(false);
-        }
-        fetchPosts();
-    }, [searchParams.toString()]);
+        setData(initialPosts);
+    }, [initialPosts]);
 
     return (
         <Stack direction={"column"} spacing={2} justifyContent={"center"} alignItems={"center"}>
-            <SearchBar loading={reloading} setIsLoading={setReloading} />
             <Box maxWidth="lg" width="100%">
-                <Grid2 container columns={3} columnSpacing={7} rowSpacing={6}>
+                <Grid2 container columns={3} columnSpacing={4} rowSpacing={6}>
                     {
                         data.posts.map(post => (
                             <Grid2 size={1} key={post.id}>
-                                <Card sx={{ ursor: "pointer", textDecoration: "none", p: 2 }}>
+                                <Card sx={{ cursor: "pointer", textDecoration: "none", p: 2 }}>
                                     <Typography variant={"h5"} component={Link} href={`/post/${getSlug(post.id, post.title)}`}>{post.id} {post.title}</Typography>
                                     <Typography variant={"body1"} color='textSecondary'>{post.body.slice(0, 100)}...</Typography>
                                     <Typography variant={"body2"}>Tags: {post.tags.join(', ')}</Typography>
@@ -64,14 +54,17 @@ export default function Arch({ initialPosts, postsPerPage }: ArchiveProps) {
                     }
                 </Grid2>
             </Box>
-            <LoadMoreButton handleClick={handleLoadMore} disabled={reloading || data.total === data.posts.length} />
+            <LoadMoreButton
+                handleClick={handleLoadMore}
+                disabled={loading || data.total === data.posts.length}
+                loading={loading}
+                setLoading={setLoading}
+            />
         </Stack>
     )
 }
 
-export function LoadMoreButton({ handleClick, disabled }: { handleClick: () => Promise<void>, disabled: boolean }) {
-
-    const [loading, setLoading] = useState(false);
+export function LoadMoreButton({ handleClick, disabled, loading, setLoading }: { handleClick: () => Promise<void>, disabled: boolean, loading: boolean, setLoading: (loading: boolean) => void }) {
 
     return (
         <Button
@@ -81,42 +74,5 @@ export function LoadMoreButton({ handleClick, disabled }: { handleClick: () => P
             loading={loading}
             loadingPosition='end'
         >{loading ? "Loading" : "Load more"}</Button>
-    )
-}
-
-export function SearchBar({ loading, setIsLoading }: { loading: boolean, setIsLoading: (loading: boolean) => void }) {
-    const searchParams = useSearchParams();
-    const pathname = usePathname();
-    const router = useRouter();
-
-    function handleSearch(term: string) {
-        const params = new URLSearchParams(searchParams);
-        if (term) {
-            params.set('query', term);
-        } else {
-            params.delete('query');
-        }
-        // history.pushState({}, '', `${pathname}?${params.toString()}`);
-        router.replace(`${pathname}?${params.toString()}`);
-        changed = true;
-    }
-
-    return (
-        <FormControl sx={{ width: "25rem" }}>
-            <InputLabel htmlFor='search'>Search</InputLabel>
-            <OutlinedInput
-                id='search'
-                label='Search'
-                placeholder='Search...'
-                defaultValue={searchParams.get('query')}
-                onChange={(e) => {
-                    setIsLoading(true);
-                    handleSearch(e.target.value);
-                    setIsLoading(false);
-                }}
-                // sx={{borderRadius: 8}}
-                endAdornment={loading ? <CircularProgress size={20} /> : <Search />}
-            />
-        </FormControl>
     )
 }
