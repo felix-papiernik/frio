@@ -1,4 +1,4 @@
-import { Article } from '@/app/page';
+import { Article } from '@/lib/types';
 import { Box, Typography } from '@mui/material';
 import { notFound } from 'next/navigation';
 import React from 'react'

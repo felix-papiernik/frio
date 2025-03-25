@@ -25,7 +25,9 @@ export default function RootLayout({
             <Stack direction={"column"} minHeight={"100vh"} width={"100%"} sx={{ backgroundColor: "background.default" }}>
               <Header />
               <Box component="main" sx={{ flexGrow: 1, padding: 2, minHeight: "100%", width: "100%", boxSizing: "border-box", display: "flex", flexWrap: "nowrap", backgroundColor: "transparent" }}>
-                {children}
+                <Box maxWidth={"lg"} margin={"auto"} padding={2}>
+                  {children}
+                </Box>
               </Box>
               <Footer />
             </Stack>

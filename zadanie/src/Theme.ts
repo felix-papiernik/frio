@@ -12,11 +12,11 @@ const xlBreakpoint = 1920;
 export const theme = createTheme({
     palette: {
         mode: 'light',
-        //https://coolors.co/d82323-1c1c1c-c6a15b-f2e86d-d3dfb8
+        //https://coolors.co/fab201-1c1c1c-a2c5ac-9db5b2-878e99
         primary: {
             main: '#FAB201',
             // light: '#f83a28',
-            // dark: '#cb1a1b',
+            dark: '#F4AF01',
             contrastText: '#FAFAFA',
         },
         secondary: {

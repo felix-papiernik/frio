@@ -1,7 +1,7 @@
 "use client";
 
 import { Search } from "@mui/icons-material";
-import { FormControl, InputLabel, OutlinedInput, IconButton, FilledInput } from "@mui/material";
+import { FormControl, InputLabel, IconButton, FilledInput } from "@mui/material";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 
@@ -29,10 +29,8 @@ export function SearchBar() {
                 <InputLabel htmlFor='search'>Search</InputLabel>
                 <FilledInput
                     id='search'
-                    // label: 'Search'
                     value={searchText}
                     onChange={(e) => setSearchText(e.target.value)}
-                    // sx={{borderRadius: 8}}
                     endAdornment={<IconButton type="submit"
                         disabled={searchText === ""}
                         sx={{ cursor: "pointer" }}>
