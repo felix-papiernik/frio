@@ -1,9 +1,7 @@
-import { Box, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import Archive from "@/components/Archive";
 import { delayMs, postsPerPage } from "@/lib/utils";
 import { PostsResponse } from "@/lib/types";
-import { Suspense } from "react";
-import Loading from "../loading";
 
 export default async function Page(props: {
     searchParams?: Promise<{

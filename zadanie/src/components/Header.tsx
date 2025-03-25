@@ -7,7 +7,7 @@ import TagLink from './TagLink';
 
 export default async function Header() {
 
-    const tags = (await fetch('https://dummyjson.com/posts/tags').then(res => res.json()) as Tag[]).slice(0, 8);
+    const tags = (await fetch('https://dummyjson.com/posts/tags').then(res => res.json()) as Tag[]).slice(0, 9);
 
     return (
         <Stack component="header" direction={"column"} alignItems={"center"} gap={3} pt={2}>
@@ -28,7 +28,6 @@ export default async function Header() {
                     <SearchBar />
                 </Stack>
             </Box>
-
         </Stack>
     )
 }

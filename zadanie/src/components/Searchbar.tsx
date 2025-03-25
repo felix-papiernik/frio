@@ -1,8 +1,7 @@
 "use client";
 
-import { redirectToSearch } from "@/lib/actions";
 import { Search } from "@mui/icons-material";
-import { FormControl, InputLabel, IconButton, FilledInput, TextField, useTheme } from "@mui/material";
+import { IconButton, TextField, useTheme } from "@mui/material";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, useEffect, useRef, useState } from "react";
 
@@ -20,7 +19,6 @@ export function SearchBar() {
     const inputRef = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {
-        // const query = params.get('query');
         setSearchText('');
         setFocused(false);
         inputRef.current?.blur();
@@ -29,8 +27,6 @@ export function SearchBar() {
     async function handleSubmit(event: FormEvent<HTMLFormElement>): Promise<void> {
         event.preventDefault();
         router.push(`/search?query=${searchText.toString()}`);
-        // redirectToSearch(searchText.toString());
-        // router.refresh();
     }
 
     return (

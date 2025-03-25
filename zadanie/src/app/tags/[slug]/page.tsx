@@ -1,7 +1,6 @@
-import { PostsResponse } from '@/app/page';
 import Archive from '@/components/Archive';
 import { postsPerPage } from '@/lib/utils';
-import { Tag } from '@/lib/types';
+import { PostsResponse, Tag } from '@/lib/types';
 import { Typography } from '@mui/material';
 import { notFound } from 'next/navigation';
 import React from 'react'
