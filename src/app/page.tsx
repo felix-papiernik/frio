@@ -10,6 +10,7 @@ export default async function Home() {
 
   return (
     <Archive
+      title="Latest Posts"
       hidePostsCount={true}
       initialPosts={initPostsRes}
       loadMorePosts={async (skip: number) => {

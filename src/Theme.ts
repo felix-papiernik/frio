@@ -20,8 +20,7 @@ export const theme = createTheme({
             contrastText: '#FAFAFA',
         },
         secondary: {
-            main: '#A2C5AC',
-            // main: '#7EA0B7',//uranian blue
+            main: '#6C809A',
             contrastText: '#fff',
         },
         background: {
@@ -39,8 +38,11 @@ export const theme = createTheme({
         },
     },
     typography: {
+        allVariants: {
+            textDecoration: 'none',
+        },
         h1: {
-            fontSize: '3rem',
+            fontSize: '2.5rem',//3rem
             fontWeight: 700,
             lineHeight: 1.2,
         },

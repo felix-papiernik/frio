@@ -1,19 +1,20 @@
 "use client";
 
 import { Article, PostsResponse } from '@/lib/types';
-import { getSlug } from '@/lib/utils'
+import { archiveGridStyles, getSlug } from '@/lib/utils'
 import { Grid2, Card, Typography, Button, Stack, Box, Divider } from '@mui/material'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import { ThumbUp, VisibilityOutlined } from '@mui/icons-material';
 
 export interface ArchiveProps {
+    title: string,
     initialPosts: PostsResponse,
     hidePostsCount?: boolean,
     loadMorePosts: (skip: number) => Promise<Article[]>
 }
 
-export default function Archive({ initialPosts, loadMorePosts, hidePostsCount }: ArchiveProps) {
+export default function Archive({ title, initialPosts, loadMorePosts, hidePostsCount }: ArchiveProps) {
 
     const [data, setData] = useState(initialPosts);
     const [loading, setLoading] = useState(false);
@@ -34,25 +35,29 @@ export default function Archive({ initialPosts, loadMorePosts, hidePostsCount }:
     return (
         <Stack direction={"column"} spacing={2} justifyContent={"center"} alignItems={"center"}>
             <Box maxWidth="lg" width="100%">
+                <Typography variant={"h1"} sx={{ mb: 2 }}>{title}</Typography>
                 {
                     hidePostsCount ? null : <Typography variant='body1' color='textSecondary' mb={1}>Showing {data.posts.length} of {data.total}</Typography>
                 }
-                <Grid2 container columns={3} columnSpacing={4} rowSpacing={6}>
+                <Grid2 container {...archiveGridStyles} mb={2}>
                     {
                         data.posts.map(post => (
                             <Grid2 size={1} key={post.id}>
                                 <Card sx={{ p: 0, flexGrow: 1, height: "100%" }}>
-                                    <img
-                                        src={`https://picsum.photos/seed/${post.id}/600/300`}
-                                        alt={post.title}
-                                        width={600}
-                                        height={300}
-                                    />
-                                    <Box px={2} py={1}>
+                                    <Link href={`/posts/${getSlug(post.id, post.title)}`}>
+                                        <img
+                                            src={`https://picsum.photos/seed/${post.id}/600/300`}
+                                            alt={post.title}
+
+                                            width={600}
+                                            height={300}
+                                        />
+                                    </Link>
+                                    <Box p={2} pt={1} >
                                         <Typography
                                             variant={"h6"}
                                             component={Link}
-                                            href={`/post/${getSlug(post.id, post.title)}`}
+                                            href={`/posts/${getSlug(post.id, post.title)}`}
                                             sx={{
                                                 textDecoration: "none",
                                                 "&:hover": {
@@ -68,11 +73,19 @@ export default function Archive({ initialPosts, loadMorePosts, hidePostsCount }:
                                             <VisibilityOutlined color='disabled' />
                                             <Typography variant={"body2"} color='textSecondary' fontSize='small'>{post.views}</Typography>
                                             <Divider orientation='vertical' flexItem />
-                                            <ThumbUp color='disabled' fontSize='small'/>
+                                            <ThumbUp color='disabled' fontSize='small' />
                                             <Typography variant={"body2"} color='textSecondary'>{post.reactions.likes}</Typography>
                                         </Stack>
                                         <Typography variant={"body1"} color='textSecondary'>{post.body.slice(0, 100)}...</Typography>
-                                        <Typography variant={"body2"}>Tags: {post.tags.join(', ')}</Typography>
+                                        <Stack direction={"row"} spacing={1} alignItems={"center"} mt={1}>
+                                            <Typography variant={"body2"} color='textSecondary'>Tags: </Typography>
+                                            {post.tags.map((tag, index) => (
+                                                <React.Fragment key={tag}>
+                                                    <Typography component={Link} variant={"body2"} color='secondary' href={"/tags/" + tag} sx={{ "&:hover": { textDecoration: "underline" } }}>{tag}</Typography>
+                                                    {index < post.tags.length - 1 && <Divider orientation='vertical' flexItem />}
+                                                </React.Fragment>
+                                            ))}
+                                        </Stack>
                                     </Box>
                                 </Card>
                             </Grid2>

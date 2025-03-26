@@ -1,6 +1,6 @@
 "use server";
 
-import { permanentRedirect, redirect,  } from "next/navigation";
+import { permanentRedirect } from "next/navigation";
 import { PostsResponse } from "./types";
 import { delayMs } from "./utils";
 
