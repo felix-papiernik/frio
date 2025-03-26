@@ -7,7 +7,7 @@ export const getSlug = (id: number, title: string) => {
 export const postsPerPage = 9;
 
 export const archiveGridStyles: Grid2Props = {
-    columns: { xs: 1, sm: 2, lg: 3 }, 
+    columns: { xs: 1, sm: 2, md: 3 }, 
     columnSpacing: 4, 
     rowSpacing: 6
 }

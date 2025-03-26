@@ -5,6 +5,7 @@ import { Stack } from '@mui/system';
 import { notFound } from 'next/navigation';
 import React from 'react'
 import Image from "next/image";
+import { delayMs } from '@/lib/utils';
 
 export default async function page({ params }: { params: Promise<{ slug: string }> }) {
 
@@ -12,7 +13,7 @@ export default async function page({ params }: { params: Promise<{ slug: string 
 
     const id = parseInt(postSlug.split('-')[0]);
 
-    const res = await fetch(`https://dummyjson.com/posts/${id}?delay=1000`);
+    const res = await fetch(`https://dummyjson.com/posts/${id}?delay=` + delayMs);
     const data = await res.json();
 
     if (data.message) {
@@ -41,7 +42,7 @@ export default async function page({ params }: { params: Promise<{ slug: string 
                     objectFit: "cover",
                     boxShadow: "0 0 10px rgba(0,0,0,0.2)",
                 }}
-                priority // ⬅️ loads eagerly, no flicker
+                priority
             />
             <Typography variant={"body1"} mt={1}>{post.body}</Typography>
         </>

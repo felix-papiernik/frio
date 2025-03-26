@@ -24,7 +24,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
         <>
             <Archive
                 title={`Posts by tag: ${tag.name}`}
-                initialPosts={postsData}
+                initialPostsData={postsData}
                 loadMorePosts={async (skip: number) => {
                     "use server";
                     const response = await fetch(`https://dummyjson.com/posts/tag/${slug}?limit=${postsPerPage}&skip=${skip}`);

@@ -1,15 +1,10 @@
 import { archiveGridStyles, postsPerPage } from '@/lib/utils'
-import { Box, Grid2, Skeleton, Typography } from '@mui/material'
+import { Grid2, Skeleton, Typography } from '@mui/material'
 import React from 'react'
 
 export default function Loading() {
     return (
-        <Box
-            maxWidth="lg"
-            mx="auto"
-            py={2}
-            width="100%"
-        >
+        <>
             <Typography variant={"h1"} sx={{ mb: 2 }}>
                 <Skeleton width={500} />
             </Typography>
@@ -24,6 +19,6 @@ export default function Loading() {
                     </Grid2>
                 ))}
             </Grid2>
-        </Box>
+        </>
     )
 }

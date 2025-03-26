@@ -9,14 +9,14 @@ import { ThumbUp, VisibilityOutlined } from '@mui/icons-material';
 
 export interface ArchiveProps {
     title: string,
-    initialPosts: PostsResponse,
+    initialPostsData: PostsResponse,
     hidePostsCount?: boolean,
     loadMorePosts: (skip: number) => Promise<Article[]>
 }
 
-export default function Archive({ title, initialPosts, loadMorePosts, hidePostsCount }: ArchiveProps) {
+export default function Archive({ title, initialPostsData, loadMorePosts, hidePostsCount }: ArchiveProps) {
 
-    const [data, setData] = useState(initialPosts);
+    const [data, setData] = useState(initialPostsData);
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
 
@@ -29,8 +29,8 @@ export default function Archive({ title, initialPosts, loadMorePosts, hidePostsC
     }
 
     useEffect(() => {
-        setData(initialPosts);
-    }, [initialPosts]);
+        setData(initialPostsData);
+    }, [initialPostsData]);
 
     return (
         <Stack direction={"column"} spacing={2} justifyContent={"center"} alignItems={"center"}>
@@ -43,51 +43,7 @@ export default function Archive({ title, initialPosts, loadMorePosts, hidePostsC
                     {
                         data.posts.map(post => (
                             <Grid2 size={1} key={post.id}>
-                                <Card sx={{ p: 0, flexGrow: 1, height: "100%" }}>
-                                    <Link href={`/posts/${getSlug(post.id, post.title)}`}>
-                                        <img
-                                            src={`https://picsum.photos/seed/${post.id}/600/300`}
-                                            alt={post.title}
-
-                                            width={600}
-                                            height={300}
-                                        />
-                                    </Link>
-                                    <Box p={2} pt={1} >
-                                        <Typography
-                                            variant={"h6"}
-                                            component={Link}
-                                            href={`/posts/${getSlug(post.id, post.title)}`}
-                                            sx={{
-                                                textDecoration: "none",
-                                                "&:hover": {
-                                                    color: "primary.main",
-                                                    transition: "color 0.2s ease-in-out"
-                                                },
-                                                lineHeight: "1.1em"
-                                            }}
-                                        >
-                                            {post.title}
-                                        </Typography>
-                                        <Stack direction={"row"} spacing={1} alignItems={"center"} mb={1} mt={"2px"}>
-                                            <VisibilityOutlined color='disabled' />
-                                            <Typography variant={"body2"} color='textSecondary' fontSize='small'>{post.views}</Typography>
-                                            <Divider orientation='vertical' flexItem />
-                                            <ThumbUp color='disabled' fontSize='small' />
-                                            <Typography variant={"body2"} color='textSecondary'>{post.reactions.likes}</Typography>
-                                        </Stack>
-                                        <Typography variant={"body1"} color='textSecondary'>{post.body.slice(0, 100)}...</Typography>
-                                        <Stack direction={"row"} spacing={1} alignItems={"center"} mt={1}>
-                                            <Typography variant={"body2"} color='textSecondary'>Tags: </Typography>
-                                            {post.tags.map((tag, index) => (
-                                                <React.Fragment key={tag}>
-                                                    <Typography component={Link} variant={"body2"} color='secondary' href={"/tags/" + tag} sx={{ "&:hover": { textDecoration: "underline" } }}>{tag}</Typography>
-                                                    {index < post.tags.length - 1 && <Divider orientation='vertical' flexItem />}
-                                                </React.Fragment>
-                                            ))}
-                                        </Stack>
-                                    </Box>
-                                </Card>
+                                <ArticleCard post={post} />
                             </Grid2>
                         ))
                     }
@@ -103,7 +59,58 @@ export default function Archive({ title, initialPosts, loadMorePosts, hidePostsC
     )
 }
 
-export function LoadMoreButton({ handleClick, disabled, loading, setLoading }: { handleClick: () => Promise<void>, disabled: boolean, loading: boolean, setLoading: (loading: boolean) => void }) {
+function ArticleCard({ post }: { post: Article }) {
+    return (
+        <Card sx={{ p: 0, flexGrow: 1, height: "100%" }}>
+            <Link href={`/posts/${getSlug(post.id, post.title)}`}>
+                <img
+                    src={`https://picsum.photos/seed/${post.id}/600/300`}
+                    alt={post.title}
+
+                    width={600}
+                    height={300}
+                />
+            </Link>
+            <Box p={2} pt={1} >
+                <Typography
+                    variant={"h6"}
+                    component={Link}
+                    href={`/posts/${getSlug(post.id, post.title)}`}
+                    sx={{
+                        textDecoration: "none",
+                        "&:hover": {
+                            color: "primary.main",
+                            transition: "color 0.2s ease-in-out"
+                        },
+                        lineHeight: "1.1em"
+                    }}
+                >
+                    {post.title}
+                </Typography>
+                <Stack direction={"row"} spacing={1} alignItems={"center"} mb={1} mt={"2px"}>
+                    <VisibilityOutlined color='disabled' />
+                    <Typography variant={"body2"} color='textSecondary' fontSize='small'>{post.views}</Typography>
+                    <Divider orientation='vertical' flexItem />
+                    <ThumbUp color='disabled' fontSize='small' />
+                    <Typography variant={"body2"} color='textSecondary'>{post.reactions.likes}</Typography>
+                </Stack>
+                <Typography variant={"body1"} color='textSecondary'>{post.body.slice(0, 100)}...</Typography>
+                <Stack direction={"row"} spacing={1} alignItems={"center"} mt={1}>
+                    <Typography variant={"body2"} color='textSecondary'>Tags: </Typography>
+                    {post.tags.map((tag, index) => (
+                        <React.Fragment key={tag}>
+                            <Typography component={Link} variant={"body2"} color='secondary' href={"/tags/" + tag} sx={{ "&:hover": { textDecoration: "underline" } }}>{tag}</Typography>
+                            {index < post.tags.length - 1 && <Divider orientation='vertical' flexItem />}
+                        </React.Fragment>
+                    ))}
+                </Stack>
+            </Box>
+        </Card>
+    )
+}
+
+
+function LoadMoreButton({ handleClick, disabled, loading, setLoading }: { handleClick: () => Promise<void>, disabled: boolean, loading: boolean, setLoading: (loading: boolean) => void }) {
     return (
         <Button
             variant='contained'
